@@ -74,7 +74,7 @@ gate has no undo.
 | [`docs/decisions/`](./docs/decisions/README.md)              | ADRs — the decisions, and the alternatives that lost                                                          |
 | [`.github/`](./.github/SECURITY.md)                          | Security posture, PR template, CI, Dependabot                                                                 |
 | `scripts/`                                                   | Build and audit tooling, run by `pnpm verify` and CI                                                          |
-| [`.claude/skills/`](./.claude/skills/README.md)              | The change lifecycle as runnable procedures                                                                   |
+| [`.claude/`](./.claude/skills/README.md)                     | The change lifecycle as runnable procedures, plus a reviewed permissions allowlist                            |
 
 ## Deployment
 

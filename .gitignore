@@ -32,7 +32,7 @@ coverage/
 # is a control, not tidiness: a stray copy must not be stageable by `git add -A`.
 portfolio_product_spec.md
 
-# Per-machine Claude Code settings. This file can hold credentials, so ignoring it is a
-# SECRET control in a public repo, not tidiness. The tracked `.claude/` content is the two
-# skills in .claude/skills/, which carry no configuration and no secrets.
+# Per-machine Claude Code settings. This file can hold credentials — an auth token among them —
+# so ignoring it is a SECRET control in a public repo, not tidiness. `.claude/settings.json`
+# (shared, permissions only, no secrets) and `.claude/skills/` stay tracked.
 .claude/settings.local.json

@@ -55,6 +55,14 @@ branch and expensive once it has inbound imports and links.
 - **`public/`** — served verbatim at the site root. Everything here is permanently public the moment
   it is committed; `docs/content-policy.md` governs what is allowed in.
 - **`scripts/`** — build and audit tooling, run by CI and by `pnpm verify`.
+- **`.claude/`** — `skills/` (the change lifecycle as procedures) and `settings.json`, which is a
+  **permissions allowlist only** and holds no secrets, so it is tracked and reviewed like any other
+  config. `settings.local.json` is per-machine, can hold an auth token, and is gitignored as a
+  secret control — see [`.gitignore`](./.gitignore). The allowlist covers read-only inspection and
+  the project's own scripts; `git push`, `gh pr create` and `gh pr merge` are deliberately left at
+  **ask** so that nothing reaches the public remote without a prompt, and history-destroying
+  commands (`push --force`, `reset --hard`) are **denied** outright, because this repository's
+  premise is that its history is permanent. `pnpm dev` is omitted on purpose: it does not exit.
 - **`e2e/`** — Playwright specs. Unit tests do **not** live here: a unit test colocates as
   `*.test.ts` next to the code it covers. Only browser tests need a shared home.
 - **Naming:** kebab-case for files and directories; PascalCase for components; UPPERCASE for
