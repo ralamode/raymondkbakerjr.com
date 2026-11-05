@@ -29,16 +29,33 @@ history.
 
 ## M1 — Static portfolio live
 
-| id   | Item                                                                                      | Status |
-| ---- | ----------------------------------------------------------------------------------------- | ------ |
-| M1-1 | Scaffold Astro + TypeScript strict; add lint, typecheck, build and dependency-audit gates | Open   |
-| M1-2 | Semantic responsive layout: header, hero, work, experience, contact, footer               | Open   |
-| M1-3 | Typed content in `src/data/`; anchor navigation                                           | Open   |
-| M1-4 | Contact section and footer: LinkedIn call to action                                       | Open   |
-| M1-5 | `scripts/audit-dist.mjs` and the Playwright a11y / keyboard / 320px suite                 | Open   |
-| M1-6 | Vercel project, custom domain, TLS, apex/`www` canonicalization, preview `noindex`        | Open   |
-| M1-7 | Metadata: canonical URL, Open Graph image, `robots.txt`, `sitemap.xml`                    | Open   |
-| M1-8 | Verify on a real phone and with keyboard-only navigation                                  | Open   |
+**Ids are stable identifiers, not a sequence.** They are referenced by branch names and commit
+footers, so they never get renumbered. The table below is in execution order; read the id column as
+a name.
+
+| id    | Item                                                                                      | Status |
+| ----- | ----------------------------------------------------------------------------------------- | ------ |
+| M1-1  | Scaffold Astro + TypeScript strict; add lint, typecheck, build and dependency-audit gates | Open   |
+| M1-6a | Vercel project connected to the repo, Astro preset, previews building                     | Open   |
+| M1-2  | Semantic responsive layout: header, hero, work, experience, contact, footer               | Open   |
+| M1-5  | `scripts/audit-dist.mjs` and the Playwright a11y / keyboard / 320px suite                 | Open   |
+| M1-3  | Typed content in `src/data/`; anchor navigation                                           | Open   |
+| M1-4  | Contact section and footer: LinkedIn call to action                                       | Open   |
+| M1-7  | Metadata: canonical URL, Open Graph image, `robots.txt`, `sitemap.xml`                    | Open   |
+| M1-6b | Custom domain, TLS, apex/`www` canonicalization, preview `noindex`                        | Open   |
+| M1-8  | Verify on a real phone and with keyboard-only navigation                                  | Open   |
+
+Two orderings here are deliberate, and both were wrong in the first draft of this plan:
+
+- **M1-6a comes second, not sixth.** Every change's [Definition of Done](./definition-of-done.md)
+  requires that its Vercel preview was opened and checked. Until the project is connected there is
+  no preview, so every PR after the scaffold would either fail its own bar or tick that box without
+  having done it. Connecting the project is cheap and unblocks the rest; the domain and
+  canonicalization are a separate, later job, which is why M1-6 is split.
+- **M1-5 comes before the content work, not after it.** It carries the axe-core, keyboard and 320px
+  checks. Landing them after the layout and copy means retrofitting the gates onto markup that was
+  built without them, which is the wrong way round for a site whose accessibility claim is the
+  product rather than a feature of it.
 
 **Exit:** a recruiter reaches GitHub or LinkedIn in ≤2 clicks with JavaScript disabled; every gate
 in [AGENTS.md](../AGENTS.md#quality-gates) passes; no private contact detail is disclosed anywhere.
