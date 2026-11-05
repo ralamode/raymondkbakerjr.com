@@ -1,0 +1,26 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: chore
+      include: scope
+    groups:
+      # One PR for routine dev-tooling bumps. Reviewing five identical patch PRs by hand is how
+      # a repo learns to merge dependency updates unread.
+      dev-tooling:
+        patterns: ['*']
+        dependency-type: development
+        update-types: ['minor', 'patch']
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: ci
+    # Actions are pinned to commit SHAs (see .github/SECURITY.md). Dependabot updates the SHA and
+    # the trailing version comment together, which is the only maintainable way to keep pins current.

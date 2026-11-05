@@ -1,0 +1,42 @@
+MIT License (source code only — see "Scope" below)
+
+Copyright (c) 2026 Raymond Baker
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Scope
+
+The MIT grant above covers the **source code** of this repository: the Astro
+components, layouts, styles, scripts, configuration, and CI tooling. Take it,
+learn from it, reuse it.
+
+It does **not** cover the **portfolio content**, which is
+"All rights reserved, copyright (c) 2026 Raymond Baker":
+
+- Biographical and experience copy, and project descriptions
+- The resume in `public/resume.pdf` and any derivative of it
+- Photographs, logos, and the monogram or other identifying marks
+
+This is a deliberate split. The code is a work sample and is meant to be
+copyable; a personal biography and resume are not, and a permissive license
+over them would invite reuse that was never intended. Reusing the structure
+to build your own portfolio is welcome and expected — republishing someone
+else's professional history is not.

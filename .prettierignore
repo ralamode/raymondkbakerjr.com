@@ -1,0 +1,11 @@
+node_modules
+dist
+.astro
+.vercel
+coverage
+playwright-report
+test-results
+pnpm-lock.yaml
+
+# Served verbatim. A formatter rewrite here changes what ships.
+public/
