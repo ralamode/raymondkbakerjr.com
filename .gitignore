@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Environment — never commit a real value. This repo has no secrets today (see
+# docs/decisions/0003-defer-contact-form.md); these rules exist so that stays true.
+.env
+.env*.local
+
+# Vercel
+.vercel
+
+# Test artifacts
+playwright-report/
+test-results/
+coverage/
+
+# Local scratch
+.screenshots/
+*.tsbuildinfo
+*.log
+
+# macOS
+.DS_Store
+
+# The owner's working product spec. It carries job-search context, a threat model and
+# PII-handling notes that do not belong in a public repo. Its public-safe derivatives are
+# docs/architecture.md, docs/plan.md, docs/content-policy.md and docs/decisions/. This rule
+# is a control, not tidiness: a stray copy must not be stageable by `git add -A`.
+portfolio_product_spec.md
+
+# Per-machine Claude Code settings. This file can hold credentials, so ignoring it is a
+# SECRET control in a public repo, not tidiness. The tracked `.claude/` content is the two
+# skills in .claude/skills/, which carry no configuration and no secrets.
+.claude/settings.local.json
