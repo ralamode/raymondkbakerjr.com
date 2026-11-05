@@ -1,0 +1,126 @@
+---
+/**
+ * Scaffold placeholder. M1-2 replaces this with the real layout (header, hero, work, experience,
+ * contact, footer) built from `BaseLayout.astro` and the typed content modules in `src/data/`.
+ *
+ * It is deliberately a dignified holding page rather than filler: M1-6a connects the Vercel
+ * project next, so whatever is here is what a preview (and briefly, production) serves. Every
+ * claim on it is traceable to already-public source material, per docs/content-policy.md.
+ */
+const title = 'Ray Baker, Senior / Staff Software Engineer';
+const description =
+  'Senior / Staff software engineer in Northeastern Pennsylvania. Frontend, design systems, performance and accessibility.';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL('/', Astro.site).href} />
+  </head>
+  <body>
+    <main>
+      <h1>Ray Baker</h1>
+      <p class="role">Senior / Staff Software Engineer</p>
+      <p class="site-status">
+        This site is being rebuilt in the open. The source, including the decisions behind it, is on
+        GitHub.
+      </p>
+      <ul class="links">
+        <li>
+          <a href="https://github.com/ralamode">GitHub</a>
+        </li>
+        <li>
+          <a href="https://www.linkedin.com/in/raymondbaker">LinkedIn</a>
+        </li>
+      </ul>
+    </main>
+  </body>
+</html>
+
+<style>
+  /*
+   * Minimal and intentionally un-designed. The token system, type scale and palette are M0-9 and
+   * M1-2; adding them here would mean writing them twice. System font stack only: no webfont is
+   * the standing rule (docs/architecture.md -> Performance budget).
+   */
+  :root {
+    --ink: #16191d;
+    --paper: #ffffff;
+    --muted: #4a5159;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ink: #e8eaed;
+      --paper: #121417;
+      --muted: #a2abb5;
+    }
+  }
+
+  html {
+    color-scheme: light dark;
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family:
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Roboto,
+      sans-serif;
+    line-height: 1.6;
+  }
+
+  main {
+    /* 16px gutter so the page holds at 320px without horizontal overflow. */
+    max-width: 38rem;
+    margin-inline: auto;
+    padding: 4rem 1rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 7vw, 2.75rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .role {
+    margin: 0.25rem 0 2rem;
+    color: var(--muted);
+  }
+
+  .site-status {
+    margin: 0 0 2rem;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .links a {
+    display: inline-block;
+    /* >=44px tap target without a fixed width that would break at 320px. */
+    padding: 0.6rem 0;
+    color: inherit;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.25em;
+  }
+
+  .links a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+</style>

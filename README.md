@@ -46,11 +46,17 @@ file, so there is no "works on my machine" gap).
 
 ```bash
 pnpm install
+pnpm dev         # local dev server
+pnpm build       # static output into dist/
 pnpm verify      # everything CI runs — run this before opening a PR
 ```
 
-Once the site is scaffolded (M1-1), `pnpm dev` will serve it locally and `pnpm build` will produce
-`dist/`.
+`pnpm verify` chains `format:check`, `lint`, `typecheck` (`astro check`, which covers `.astro`
+templates as well as types), `docs:links`, `build` and `audit:deps`.
+
+Astro reports anonymous build telemetry by default. CI disables it with
+`ASTRO_TELEMETRY_DISABLED=1`, which is the same position this site takes on analytics. Locally,
+`pnpm astro telemetry disable` sets it once per machine.
 
 ### Editing content
 

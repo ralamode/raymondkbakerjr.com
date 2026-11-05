@@ -9,6 +9,12 @@ on:
 permissions:
   contents: read
 
+env:
+  # Astro reports anonymous build telemetry by default. This repo's position on analytics is that
+  # there are none (README -> constraints); applying that to our own build rather than only to the
+  # visitor's page is the consistent reading, and CI is where it would otherwise fire every push.
+  ASTRO_TELEMETRY_DISABLED: '1'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -37,15 +43,27 @@ jobs:
       - name: Format
         run: pnpm format:check
 
+      - name: Lint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
       - name: Documentation links
         run: pnpm docs:links
 
-      # The jobs below arrive with the code they check, as tracked in docs/plan.md:
-      #   M1-1  lint · typecheck · build · pnpm audit --prod --audit-level=high
-      #   M1-5  audit:dist (zero client JS, byte budget, image dimensions) · e2e (axe-core,
-      #         keyboard traversal, 320px overflow)
-      # They are named here rather than silently absent: AGENTS.md → "Quality gates" is the one
-      # list of what is checked, and it marks these as not yet active.
+      - name: Build
+        run: pnpm build
+
+      - name: Production dependency advisories
+        # Threshold is `critical`, not `high`, and AGENTS.md -> Quality gates says why: this site
+        # ships zero runtime JavaScript, so a high advisory in the build toolchain cannot reach the
+        # static artifact, and a gate that cries wolf is one people learn to bypass.
+        run: pnpm audit:deps
+
+      # Not yet active, and tracked in docs/plan.md rather than implied here:
+      #   M1-5  audit:dist (zero client JS, byte budget, intrinsic image dimensions) and
+      #         e2e (axe-core, keyboard traversal, 320px overflow)
 
   secrets:
     name: Secret scan
