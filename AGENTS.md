@@ -80,6 +80,10 @@ branch and expensive once it has inbound imports and links.
   ([ADR-0003](./docs/decisions/0003-defer-contact-form.md)).
 - **Package manager:** pnpm, version pinned by `packageManager`. Node version pinned by `.nvmrc`; CI
   reads the same file, so there is no "works on my machine" gap.
+- **Dependency freshness floor:** `pnpm-workspace.yaml` sets `minimumReleaseAge` to 3 days, so a
+  version published in the last few days is not installed. A compromised release is usually caught
+  and pulled within hours, so the delay closes most of that window at no real cost. It lives in the
+  repo rather than a machine-local pnpm config, so CI and every clone resolve identically.
 
 ### The "don't" list
 
@@ -186,21 +190,29 @@ whole branch-to-merge sequence.
 `pnpm verify` runs everything CI runs. **Run it before opening a PR.** It is the one list of what is
 checked; other docs point here rather than restating it.
 
-| Gate                                                                                | Command                                | Status                                   |
-| ----------------------------------------------------------------------------------- | -------------------------------------- | ---------------------------------------- |
-| Formatting                                                                          | `pnpm format:check`                    | Active                                   |
-| Relative doc links resolve (existence, case, `#fragment`)                           | `pnpm docs:links`                      | Active                                   |
-| Secret scanning                                                                     | `gitleaks` (CI only)                   | Active                                   |
-| Lint                                                                                | `pnpm lint`                            | **Lands with the Astro scaffold (M1-1)** |
-| Typecheck                                                                           | `pnpm typecheck`                       | **Lands with M1-1**                      |
-| Production build                                                                    | `pnpm build`                           | **Lands with M1-1**                      |
-| Build-output assertions (zero JS, byte budget, image dimensions, no leaked address) | `pnpm audit:dist`                      | **Lands with M1-5**                      |
-| Accessibility (axe-core), keyboard traversal, 320px overflow                        | `pnpm e2e`                             | **Lands with M1-5**                      |
-| Production dependency advisories                                                    | `pnpm audit --prod --audit-level=high` | **Lands with M1-1**                      |
+| Gate                                                                                | Command                          | Status              |
+| ----------------------------------------------------------------------------------- | -------------------------------- | ------------------- |
+| Formatting                                                                          | `pnpm format:check`              | Active              |
+| Relative doc links resolve (existence, case, `#fragment`)                           | `pnpm docs:links`                | Active              |
+| Secret scanning                                                                     | `gitleaks` (CI only)             | Active              |
+| Lint                                                                                | `pnpm lint`                      | Active              |
+| Typecheck (types + `.astro` templates)                                              | `pnpm typecheck` (`astro check`) | Active              |
+| Production build                                                                    | `pnpm build`                     | Active              |
+| Build-output assertions (zero JS, byte budget, image dimensions, no leaked address) | `pnpm audit:dist`                | **Lands with M1-5** |
+| Accessibility (axe-core), keyboard traversal, 320px overflow                        | `pnpm e2e`                       | **Lands with M1-5** |
+| Production dependency advisories                                                    | `pnpm audit:deps`                | Active              |
 
 The gates marked as landing later are listed because **a gate that exists only in someone's head is
 not a gate**. They are backlog items in [docs/plan.md](./docs/plan.md), not aspirations, and CI
 today runs exactly the rows marked Active — no more, and nothing that pretends.
+
+**Why the advisory gate is `critical` and not `high`.** This site ships zero runtime JavaScript, so
+it has no runtime dependencies: `dependencies` holds Astro, which is a build tool. A high-severity
+advisory in that transitive tree is usually in a dev server or bundler path that cannot reach a
+static HTML artifact, so gating on `high` would turn CI red for things that cannot hurt this site,
+and a gate that cries wolf is a gate people learn to bypass. `critical` stays actionable. Everything
+below it is handled by Dependabot and reviewed rather than ignored, and `pnpm audit --prod` with no
+threshold shows the full picture on demand.
 
 ### Accessibility and performance are first-class
 

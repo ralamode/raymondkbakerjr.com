@@ -1,0 +1,11 @@
+# Supply chain. A compromised npm release (maintainer account takeover, malicious postinstall) is
+# usually detected and pulled within hours, so declining to install anything published in the last
+# few days removes most of that window at almost no cost in currency. See
+# .github/SECURITY.md -> Supply chain.
+#
+# The value is in MINUTES. 4320 = 3 days.
+#
+# This is set here, in the repo, rather than left to a machine-local pnpm config, so CI and every
+# clone resolve the same way. `minimumReleaseAgeStrict` is deliberately NOT enabled: it turns a
+# held-back version into an interactive prompt, which would hang a CI run.
+minimumReleaseAge: 4320
