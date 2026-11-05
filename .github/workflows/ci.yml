@@ -62,7 +62,7 @@ jobs:
         run: pnpm audit:deps
 
       # Not yet active, and tracked in docs/plan.md rather than implied here:
-      #   M1-5  audit:dist (zero client JS, byte budget, intrinsic image dimensions) and
+      #   M1-5b audit:dist (zero client JS, byte budget, intrinsic image dimensions) and
       #         e2e (axe-core, keyboard traversal, 320px overflow)
 
   secrets:

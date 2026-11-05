@@ -35,10 +35,11 @@ a name.
 
 | id    | Item                                                                                      | Status |
 | ----- | ----------------------------------------------------------------------------------------- | ------ |
-| M1-1  | Scaffold Astro + TypeScript strict; add lint, typecheck, build and dependency-audit gates | Open   |
+| M1-1  | Scaffold Astro + TypeScript strict; add lint, typecheck, build and dependency-audit gates | Done   |
+| M1-5a | PR screenshot capture and publishing (Playwright)                                         | Open   |
 | M1-6a | Vercel project connected to the repo, Astro preset, previews building                     | Open   |
 | M1-2  | Semantic responsive layout: header, hero, work, experience, contact, footer               | Open   |
-| M1-5  | `scripts/audit-dist.mjs` and the Playwright a11y / keyboard / 320px suite                 | Open   |
+| M1-5b | `scripts/audit-dist.mjs` and the Playwright a11y / keyboard / 320px suite                 | Open   |
 | M1-3  | Typed content in `src/data/`; anchor navigation                                           | Open   |
 | M1-4  | Contact section and footer: LinkedIn call to action                                       | Open   |
 | M1-7  | Metadata: canonical URL, Open Graph image, `robots.txt`, `sitemap.xml`                    | Open   |
@@ -47,12 +48,17 @@ a name.
 
 Two orderings here are deliberate, and both were wrong in the first draft of this plan:
 
+- **M1-5a comes before the first UI change.** It is the screenshot capture and publishing tooling,
+  and it has to exist before M1-2 or the layout PR ships with no visual evidence. It also seeds the
+  orphan `screenshots` branch with a Vercel opt-out, which must be in place **before** M1-6a
+  connects Vercel: Vercel builds every pushed branch and ignores `[skip ci]`, so without it each
+  screenshot upload posts a failed preview deployment.
 - **M1-6a comes second, not sixth.** Every change's [Definition of Done](./definition-of-done.md)
   requires that its Vercel preview was opened and checked. Until the project is connected there is
   no preview, so every PR after the scaffold would either fail its own bar or tick that box without
   having done it. Connecting the project is cheap and unblocks the rest; the domain and
   canonicalization are a separate, later job, which is why M1-6 is split.
-- **M1-5 comes before the content work, not after it.** It carries the axe-core, keyboard and 320px
+- **M1-5b comes before the content work, not after it.** It carries the axe-core, keyboard and 320px
   checks. Landing them after the layout and copy means retrofitting the gates onto markup that was
   built without them, which is the wrong way round for a site whose accessibility claim is the
   product rather than a feature of it.

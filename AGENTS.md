@@ -159,7 +159,12 @@ evaluating the author's engineering, so it earns real effort:
   grounds. If the reasoning is durable, it belongs in an ADR and the PR links to it.
 - **State how it was verified** — the command that was run and what it showed, not "tested locally".
 - **Name what you chose not to do**, and why, when a reviewer would reasonably expect it.
-- **Screenshots for any visual change**, at mobile (~390px) and desktop (~1280px) widths.
+- **Screenshots for any visual change.** `pnpm screenshots` captures 320px, 390px and 1280px in both
+  colour schemes and refuses to pass if anything overflows horizontally;
+  `pnpm screenshots:publish --pr <n> --comment` puts them in the PR. Never commit the PNGs. The
+  procedure is the [`ui-screenshot`](./.claude/skills/ui-screenshot/SKILL.md) skill. This is a
+  script rather than an instruction because `gh` has no image-upload path, so for as long as it was
+  only an instruction it was never actually done.
 - A PR that advances a milestone names it and says what it unblocks.
 
 ## Before you commit
@@ -190,17 +195,17 @@ whole branch-to-merge sequence.
 `pnpm verify` runs everything CI runs. **Run it before opening a PR.** It is the one list of what is
 checked; other docs point here rather than restating it.
 
-| Gate                                                                                | Command                          | Status              |
-| ----------------------------------------------------------------------------------- | -------------------------------- | ------------------- |
-| Formatting                                                                          | `pnpm format:check`              | Active              |
-| Relative doc links resolve (existence, case, `#fragment`)                           | `pnpm docs:links`                | Active              |
-| Secret scanning                                                                     | `gitleaks` (CI only)             | Active              |
-| Lint                                                                                | `pnpm lint`                      | Active              |
-| Typecheck (types + `.astro` templates)                                              | `pnpm typecheck` (`astro check`) | Active              |
-| Production build                                                                    | `pnpm build`                     | Active              |
-| Build-output assertions (zero JS, byte budget, image dimensions, no leaked address) | `pnpm audit:dist`                | **Lands with M1-5** |
-| Accessibility (axe-core), keyboard traversal, 320px overflow                        | `pnpm e2e`                       | **Lands with M1-5** |
-| Production dependency advisories                                                    | `pnpm audit:deps`                | Active              |
+| Gate                                                                                | Command                          | Status               |
+| ----------------------------------------------------------------------------------- | -------------------------------- | -------------------- |
+| Formatting                                                                          | `pnpm format:check`              | Active               |
+| Relative doc links resolve (existence, case, `#fragment`)                           | `pnpm docs:links`                | Active               |
+| Secret scanning                                                                     | `gitleaks` (CI only)             | Active               |
+| Lint                                                                                | `pnpm lint`                      | Active               |
+| Typecheck (types + `.astro` templates)                                              | `pnpm typecheck` (`astro check`) | Active               |
+| Production build                                                                    | `pnpm build`                     | Active               |
+| Build-output assertions (zero JS, byte budget, image dimensions, no leaked address) | `pnpm audit:dist`                | **Lands with M1-5b** |
+| Accessibility (axe-core), keyboard traversal, 320px overflow                        | `pnpm e2e`                       | **Lands with M1-5b** |
+| Production dependency advisories                                                    | `pnpm audit:deps`                | Active               |
 
 The gates marked as landing later are listed because **a gate that exists only in someone's head is
 not a gate**. They are backlog items in [docs/plan.md](./docs/plan.md), not aspirations, and CI

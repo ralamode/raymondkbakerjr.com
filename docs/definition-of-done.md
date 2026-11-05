@@ -44,7 +44,9 @@ change is not one.
 - [ ] Still zero client JavaScript on the index page, and still inside the
       [byte budget](./architecture.md#performance-budget)
 - [ ] Images carry intrinsic `width`/`height`
-- [ ] Screenshots at ~390px and ~1280px attached to the PR
+- [ ] `pnpm screenshots` run and the images **looked at**, then published with
+      `pnpm screenshots:publish --pr <n> --comment` (320/390/1280px, light and dark)
+- [ ] No horizontal overflow reported by the capture, which fails rather than warns
 - [ ] Vercel preview opened and checked, not assumed from a green build
 
 ## If a server endpoint is ever added (M2)
