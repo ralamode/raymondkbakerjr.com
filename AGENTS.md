@@ -195,21 +195,25 @@ whole branch-to-merge sequence.
 `pnpm verify` runs everything CI runs. **Run it before opening a PR.** It is the one list of what is
 checked; other docs point here rather than restating it.
 
-| Gate                                                                                | Command                          | Status               |
-| ----------------------------------------------------------------------------------- | -------------------------------- | -------------------- |
-| Formatting                                                                          | `pnpm format:check`              | Active               |
-| Relative doc links resolve (existence, case, `#fragment`)                           | `pnpm docs:links`                | Active               |
-| Secret scanning                                                                     | `gitleaks` (CI only)             | Active               |
-| Lint                                                                                | `pnpm lint`                      | Active               |
-| Typecheck (types + `.astro` templates)                                              | `pnpm typecheck` (`astro check`) | Active               |
-| Production build                                                                    | `pnpm build`                     | Active               |
-| Build-output assertions (zero JS, byte budget, image dimensions, no leaked address) | `pnpm audit:dist`                | **Lands with M1-5b** |
-| Accessibility (axe-core), keyboard traversal, 320px overflow                        | `pnpm e2e`                       | **Lands with M1-5b** |
-| Production dependency advisories                                                    | `pnpm audit:deps`                | Active               |
+| Gate                                                                                                    | Command                                           | Status |
+| ------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------ |
+| Formatting                                                                                              | `pnpm format:check`                               | Active |
+| Relative doc links resolve (existence, case, `#fragment`)                                               | `pnpm docs:links`                                 | Active |
+| Secret scanning                                                                                         | `gitleaks` (CI only)                              | Active |
+| Lint                                                                                                    | `pnpm lint`                                       | Active |
+| Typecheck (types + `.astro` templates)                                                                  | `pnpm typecheck` (`astro check` + `tsc --noEmit`) | Active |
+| Production build                                                                                        | `pnpm build`                                      | Active |
+| Build-output assertions (zero JS, byte budget, image dimensions, metadata, no leaked address)           | `pnpm audit:dist`                                 | Active |
+| Accessibility (axe-core WCAG 2.1 AA), keyboard, focus, touch targets, overflow 320-1440px, text scaling | `pnpm e2e`                                        | Active |
+| Production dependency advisories                                                                        | `pnpm audit:deps`                                 | Active |
 
-The gates marked as landing later are listed because **a gate that exists only in someone's head is
-not a gate**. They are backlog items in [docs/plan.md](./docs/plan.md), not aspirations, and CI
-today runs exactly the rows marked Active — no more, and nothing that pretends.
+**Every row is active.** There are no aspirational gates left: CI runs exactly this list.
+
+**A gate is not trusted until it has been seen to fail.** Each assertion in `audit:dist` and `e2e`
+was negative-tested by deliberately breaking the output and confirming it goes red. That is a
+one-off exercise rather than a standing job, but it is how the list earns the right to be believed,
+and it caught two cases where the _test_ was wrong rather than the gate. Hold any new gate to the
+same bar before adding it here.
 
 **Why the advisory gate is `critical` and not `high`.** This site ships zero runtime JavaScript, so
 it has no runtime dependencies: `dependencies` holds Astro, which is a build tool. A high-severity
