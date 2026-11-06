@@ -35,7 +35,7 @@ other than the visitor's.
 
 ## Performance budget
 
-Enforced in CI by `pnpm audit:dist` (arrives with M1-5), not by review.
+Enforced in CI by `pnpm audit:dist`, not by review. Every assertion below has been seen to fail.
 
 | Budget                                  | Limit                                   |
 | --------------------------------------- | --------------------------------------- |

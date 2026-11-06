@@ -30,35 +30,15 @@
  *   pnpm screenshots --base-url http://localhost:4321 # do not boot a server
  */
 
-import { createServer } from 'node:http';
 import { mkdir, readFile, readdir, rm } from 'node:fs/promises';
-import { extname, join, normalize, resolve } from 'node:path';
+import { join } from 'node:path';
 
+import { DEFAULT_PORT, DIST_DIR, closeServer, serveDist } from './serve-dist.mjs';
 import { chromium } from '@playwright/test';
 
 const OUT_DIR = '.screenshots';
 const DEFAULT_WIDTHS = [320, 390, 1280];
 const DEFAULT_THEMES = ['light', 'dark'];
-const PREVIEW_PORT = 4329;
-const DIST_DIR = 'dist';
-
-/** Served content types. A wrong one is a silently broken capture, so they are explicit. */
-const MIME = {
-  '.html': 'text/html; charset=utf-8',
-  '.css': 'text/css; charset=utf-8',
-  '.js': 'text/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.webp': 'image/webp',
-  '.avif': 'image/avif',
-  '.ico': 'image/x-icon',
-  '.woff2': 'font/woff2',
-  '.txt': 'text/plain; charset=utf-8',
-  '.xml': 'application/xml; charset=utf-8',
-};
-
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
   return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
@@ -68,50 +48,6 @@ function arg(name, fallback) {
 function routeSlug(route) {
   const trimmed = route.replace(/^\/+|\/+$/g, '');
   return trimmed === '' ? 'index' : trimmed.replace(/\//g, '-');
-}
-
-/**
- * Serve `dist/` on `port`, resolving once it is listening. Static files only, no directory listing,
- * and every request is confined to `dist/` so a `..` in a URL cannot read the repo.
- */
-async function serveDist(port) {
-  const root = resolve(DIST_DIR);
-
-  const server = createServer(async (req, res) => {
-    try {
-      const url = new URL(req.url ?? '/', `http://localhost:${port}`);
-      let pathname = decodeURIComponent(url.pathname);
-      if (pathname.endsWith('/')) pathname += 'index.html';
-
-      // Confine to dist/. `normalize` collapses `..` before the prefix check, so a traversal
-      // attempt resolves outside `root` and is refused rather than served.
-      const filePath = resolve(root, '.' + normalize(pathname));
-      if (filePath !== root && !filePath.startsWith(root + '/')) {
-        res.writeHead(403).end('Forbidden');
-        return;
-      }
-
-      const body = await readFile(filePath);
-      res.writeHead(200, {
-        'content-type': MIME[extname(filePath)] ?? 'application/octet-stream',
-        'cache-control': 'no-store',
-      });
-      res.end(body);
-    } catch {
-      res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' }).end('Not found');
-    }
-  });
-
-  await new Promise((ok, fail) => {
-    server.once('error', fail);
-    server.listen(port, '127.0.0.1', ok);
-  });
-  return server;
-}
-
-/** Close the server and wait for it, so the process exits instead of hanging on a live handle. */
-function closeServer(server) {
-  return new Promise((ok) => server.close(() => ok()));
 }
 
 async function main() {
@@ -142,8 +78,8 @@ async function main() {
     } catch {
       throw new Error(`no ${DIST_DIR}/index.html, run \`pnpm build\` first`);
     }
-    server = await serveDist(PREVIEW_PORT);
-    baseUrl = `http://localhost:${PREVIEW_PORT}`;
+    server = await serveDist(DEFAULT_PORT);
+    baseUrl = `http://localhost:${DEFAULT_PORT}`;
     console.log(`▸ serving ${DIST_DIR}/ on ${baseUrl}`);
   }
 
