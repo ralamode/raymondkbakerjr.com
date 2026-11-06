@@ -38,12 +38,13 @@ a name.
 | M1-1  | Scaffold Astro + TypeScript strict; add lint, typecheck, build and dependency-audit gates                                   | Done        |
 | M1-5a | PR screenshot capture and publishing (Playwright)                                                                           | Open        |
 | M1-6a | Vercel project connected to the repo, Astro preset, previews building                                                       | Done        |
-| M1-2  | Homepage: name, GitHub, LinkedIn. No sections, no content layer                                                             | Done        |
+| M1-2  | Homepage: name, GitHub, LinkedIn, About. Shared `BaseLayout`                                                                | Done        |
 | M1-5b | `scripts/audit-dist.mjs` and the Playwright a11y / keyboard / overflow suite                                                | Done        |
-| M1-3  | ~~Typed content in `src/data/`~~ dropped: three elements need no content layer                                              | Dropped     |
+| M1-3  | ~~Typed content in `src/data/`~~ dropped: two hand-written pages need no content layer                                      | Dropped     |
 | M1-4  | ~~Contact section + LinkedIn CTA~~ folded into M1-2; the Contact link ships with M2                                         | Dropped     |
 | M1-7  | Metadata: title, description and canonical done in M1-2. Open Graph, `robots.txt`, `sitemap.xml` remain                     | Open        |
 | M1-6b | Custom domain, TLS, apex/`www` canonicalization, preview `noindex`. www live; apex A record and preview noindex outstanding | In progress |
+| M1-2b | `/about`: biography and selected work, from the canonical resume                                                            | Done        |
 | M1-8  | Verify on a real phone and with keyboard-only navigation                                                                    | Open        |
 
 Two orderings here are deliberate, and both were wrong in the first draft of this plan:

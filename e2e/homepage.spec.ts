@@ -39,7 +39,7 @@ test('exposes the structure a screen reader needs', async ({ page }) => {
   await expect(page.getByRole('main')).toHaveCount(1);
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Ray Baker');
   await expect(page.getByRole('heading', { level: 1 })).toHaveCount(1);
-  await expect(page.getByRole('navigation', { name: 'Profiles' })).toHaveCount(1);
+  await expect(page.getByRole('navigation', { name: 'Primary' })).toHaveCount(1);
 
   // Real anchors with real destinations, and not forced into a new tab.
   await expect(page.getByRole('link', { name: 'GitHub' })).toHaveAttribute(
@@ -50,6 +50,7 @@ test('exposes the structure a screen reader needs', async ({ page }) => {
     'href',
     'https://www.linkedin.com/in/raymondbaker',
   );
+  await expect(page.getByRole('link', { name: 'About' })).toHaveAttribute('href', '/about');
   await expect(page.locator('a[target]')).toHaveCount(0);
 
   // The page says only what it is meant to say. Guards against copy creeping back in.
@@ -58,7 +59,7 @@ test('exposes the structure a screen reader needs', async ({ page }) => {
   // so textContent is the run-together "Ray BakerGitHubLinkedIn". innerText is what a reader
   // actually perceives, and normalising it keeps the assertion about content rather than markup.
   const visible = (await page.locator('main').innerText()).replace(/\s+/g, ' ').trim();
-  expect(visible).toBe('Ray Baker GitHub LinkedIn');
+  expect(visible).toBe('Ray Baker GitHub LinkedIn About');
 });
 
 test('is operable by keyboard, with a visible focus indicator', async ({ page }) => {
@@ -68,6 +69,8 @@ test('is operable by keyboard, with a visible focus indicator', async ({ page })
   await expect(page.getByRole('link', { name: 'GitHub' })).toBeFocused();
   await page.keyboard.press('Tab');
   await expect(page.getByRole('link', { name: 'LinkedIn' })).toBeFocused();
+  await page.keyboard.press('Tab');
+  await expect(page.getByRole('link', { name: 'About' })).toBeFocused();
 
   // `:focus-visible` must actually draw something. An outline removed without a replacement is
   // the most common way a keyboard user gets stranded.
@@ -81,7 +84,7 @@ test('is operable by keyboard, with a visible focus indicator', async ({ page })
 
 test('gives each link a 44px touch target', async ({ page }) => {
   await page.goto('/');
-  for (const name of ['GitHub', 'LinkedIn']) {
+  for (const name of ['GitHub', 'LinkedIn', 'About']) {
     const box = await page.getByRole('link', { name }).boundingBox();
     expect(box, `${name} should be laid out`).not.toBeNull();
     expect(box!.height, `${name} touch target`).toBeGreaterThanOrEqual(44);

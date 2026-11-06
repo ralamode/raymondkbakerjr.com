@@ -1,165 +1,39 @@
 ---
 /**
- * The homepage, and the whole site.
- *
- * Three visible elements by product decision: the name, and links to GitHub and LinkedIn. No
- * tagline, bio, nav bar or footer. "Software Engineer" lives in the document title and meta
- * description rather than on the page, so the page stays an identity card while search results
- * and link previews still say what he does.
- *
- * A Contact link is planned and will sit after LinkedIn, pointing at a /contact page. It is
- * deliberately not stubbed here: see docs/decisions/0003-defer-contact-form.md and M2 in
- * docs/plan.md. No markup, route or styling is reserved for it in advance.
+ * The homepage: a name and the links off it. No tagline, bio or footer, by product decision.
+ * "Software Engineer" lives in the title and meta description rather than on the page.
  */
-const title = 'Ray Baker | Software Engineer';
-const description =
-  'Personal website of Ray Baker, software engineer. Find me on GitHub and LinkedIn.';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={new URL('/', Astro.site).href} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  </head>
-  <body>
-    <main>
-      <h1>Ray Baker</h1>
-      <nav aria-label="Profiles">
-        <ul>
-          <li>
-            <a href="https://github.com/ralamode">GitHub</a>
-          </li>
-          <li>
-            <a href="https://www.linkedin.com/in/raymondbaker">LinkedIn</a>
-          </li>
-        </ul>
-      </nav>
-    </main>
-  </body>
-</html>
+<BaseLayout
+  title="Ray Baker | Software Engineer"
+  description="Personal website of Ray Baker, software engineer. Find me on GitHub and LinkedIn."
+  path="/"
+>
+  <h1>Ray Baker</h1>
+  <nav aria-label="Primary">
+    <ul>
+      <li>
+        <a href="https://github.com/ralamode">GitHub</a>
+      </li>
+      <li>
+        <a href="https://www.linkedin.com/in/raymondbaker">LinkedIn</a>
+      </li>
+      <li>
+        <a href="/about">About</a>
+      </li>
+    </ul>
+  </nav>
+</BaseLayout>
 
 <style>
   /*
-   * Dark is the default and light is the opt-in, which is the inverse of the usual arrangement
-   * and is deliberate: it matches the palette this page was designed against. `color-scheme` is
-   * declared in both so form controls, scrollbars and the canvas follow suit.
-   *
-   * Every pair below was measured rather than eyeballed. Against their backgrounds:
-   * foreground 16.77:1 dark / 16.71:1 light, accent 8.84:1 dark / 5.76:1 light. WCAG AA for
-   * normal text needs 4.5:1, and a focus indicator needs 3:1, so the accent carries both.
-   */
-  :root {
-    color-scheme: dark;
-
-    --background: #111315;
-    --foreground: #f2f3f5;
-    --accent: #89b4fa;
-
-    /* The vertical padding that turns each link into a 44px touch target. Named because the gap
-       below the heading has to subtract it back out. Paired with an explicit line-height on the
-       anchor: left to the font's default line box this produced a 40px target, measured, not the
-       44px it was meant to be. 0.9375rem x 1.4 + 12px x 2 = 45px. */
-    --link-pad-block: 12px;
-  }
-
-  @media (prefers-color-scheme: light) {
-    :root {
-      color-scheme: light;
-
-      --background: #fafafa;
-      --foreground: #181a1d;
-      --accent: #245fc2;
-    }
-  }
-
-  body {
-    margin: 0;
-    min-height: 100vh;
-    min-height: 100dvh;
-    background: var(--background);
-    color: var(--foreground);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  }
-
-  /*
-   * One fluid column, no breakpoints. `min(100% - 48px, 480px)` gives a 24px gutter until the
-   * column reaches its 480px cap, after which it simply centres, so 768px, 1024px and 1440px all
-   * render identically by construction rather than by three sets of rules.
-   *
-   * Padded from the top rather than vertically centred: the content should sit in the upper part
-   * of the viewport and stay put as the window grows.
-   */
-  main {
-    width: min(100% - 48px, 480px);
-    margin-inline: auto;
-    padding-block: clamp(48px, 12vh, 120px);
-  }
-
-  /*
-   * Sizes are the ones specified, expressed in rem rather than px. At the default 16px root this
-   * renders identically (2.125rem is 34px, 2.75rem is 44px), but a reader who has raised their
-   * browser's default font size gets scaled text instead of being ignored. Page zoom works either
-   * way; this is the other control, the one px silently opts out of. Spacing below stays in px
-   * because a touch target and a gutter are physical minimums, not text.
-   */
-  h1 {
-    margin: 0;
-    font-size: clamp(2.125rem, 5vw, 2.75rem);
-    font-weight: 700;
-    line-height: 1.15;
-    letter-spacing: -0.035em;
-  }
-
-  /*
    * 28px of optical space between the name and the links. The anchors carry visually empty
-   * padding to reach a 44px touch target, so it is subtracted here instead of stacking on top:
-   * otherwise the measured gap and the perceived gap disagree by 11px.
+   * padding to reach a 44px touch target, so it is subtracted here rather than stacking on top:
+   * otherwise the measured gap and the perceived gap disagree.
    */
   nav {
     margin-top: calc(28px - var(--link-pad-block));
-  }
-
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 24px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  a {
-    display: inline-block;
-    padding-block: var(--link-pad-block);
-    color: inherit;
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.4;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-underline-offset: 4px;
-  }
-
-  /* 15px once there is room for it. An inverse size relationship cannot be expressed cleanly in
-     clamp(), and one media query is more legible than a negative coefficient. */
-  @media (min-width: 480px) {
-    a {
-      font-size: 0.9375rem;
-    }
-  }
-
-  a:hover {
-    color: var(--accent);
-  }
-
-  a:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 5px;
-    border-radius: 2px;
   }
 </style>

@@ -1,0 +1,151 @@
+---
+/**
+ * The shell every page shares: document head, palette, type scale and the single content column.
+ *
+ * docs/architecture.md argued against a layout while there was one page, on the grounds that a
+ * wrapper with nothing to share is a layer for its own sake. That stopped being true when /about
+ * arrived: the alternative is now two copies of the palette and the base type, which drift.
+ */
+interface Props {
+  title: string;
+  description: string;
+  /** Path this page canonicalises to, e.g. `/about`. */
+  path: string;
+}
+
+const { title, description, path } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(path, Astro.site).href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style is:global>
+  /*
+   * Dark is the default and light is the opt-in, which is the inverse of the usual arrangement
+   * and matches the palette this site was designed against. `color-scheme` is declared in both so
+   * form controls, scrollbars and the canvas follow suit.
+   *
+   * Contrast is measured, not eyeballed. Against their backgrounds: foreground 16.77:1 dark and
+   * 16.71:1 light, muted 8.05:1 and 6.57:1, accent 8.84:1 and 5.76:1. WCAG AA needs 4.5:1 for
+   * normal text and 3:1 for a focus indicator, so the accent carries both. e2e/ asserts it.
+   */
+  :root {
+    color-scheme: dark;
+
+    --background: #111315;
+    --foreground: #f2f3f5;
+    --muted: #a6abb1;
+    --accent: #89b4fa;
+
+    /* Vertical padding that turns a link into a 44px touch target. Named because the gap under a
+       heading has to subtract it back out, and because `e2e` asserts the resulting height. */
+    --link-pad-block: 12px;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      color-scheme: light;
+
+      --background: #fafafa;
+      --foreground: #181a1d;
+      --muted: #555b63;
+      --accent: #245fc2;
+    }
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /*
+   * One fluid column, no breakpoints. `min(100% - 48px, 480px)` gives a 24px gutter until the
+   * column reaches its cap, after which it simply centres, so every width above roughly 528px
+   * renders identically by construction rather than by a stack of rules. 480px also puts body
+   * text at about 60 characters, which is inside the comfortable measure for reading.
+   */
+  main {
+    width: min(100% - 48px, 480px);
+    margin-inline: auto;
+    padding-block: clamp(48px, 12vh, 120px);
+  }
+
+  /*
+   * Sizes are in rem, not px. At the default 16px root these are the intended pixel values, but
+   * px silently ignores a reader who has raised their browser's default font size. Page zoom
+   * works either way; this is the other control. Spacing stays in px, because a touch target and
+   * a gutter are physical minimums rather than text.
+   */
+  h1 {
+    margin: 0;
+    font-size: clamp(2.125rem, 5vw, 2.75rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.035em;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+
+  a:hover {
+    color: var(--accent);
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 5px;
+    border-radius: 2px;
+  }
+
+  /* Standalone navigation links carry the touch-target padding; links inside prose do not, since
+     padding inside a paragraph would break the line rhythm for no gain. */
+  nav a {
+    display: inline-block;
+    padding-block: var(--link-pad-block);
+    font-size: 1rem;
+    font-weight: 500;
+    /* Explicit, because the 44px touch target is arithmetic: 1rem x 1.4 + 12px x 2 = 44.4px.
+       Left to the font's default line box this measures 40px, which is how it regressed the
+       first time. e2e asserts the result. */
+    line-height: 1.4;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* 15px once there is room. An inverse size relationship cannot be expressed cleanly in clamp(),
+     and one media query is more legible than a negative coefficient. */
+  @media (min-width: 480px) {
+    nav a {
+      font-size: 0.9375rem;
+    }
+  }
+</style>
