@@ -233,7 +233,7 @@ async function main() {
   const round = comments.filter((c) => c.body.includes(MARKER)).length + 1;
   if (round > 1 && !note) {
     throw new Error(
-      `this is screenshot round ${round} on PR #${pr} . Pass --note "<what changed>".\n` +
+      `this is screenshot round ${round} on PR #${pr}. Pass --note "<what changed>".\n` +
         'A PR carrying several screenshot comments is unreadable without it, and a reviewer should\n' +
         'not have to diff two images by eye to work out what moved.',
     );
