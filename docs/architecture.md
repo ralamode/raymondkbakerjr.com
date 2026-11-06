@@ -24,14 +24,14 @@ other than the visitor's.
 
 ## Layers
 
-| Layer     | Choice                            | Rationale                                                                                                                   |
-| --------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| Content   | Inline in `src/pages/index.astro` | Three visible elements: the name, and GitHub and LinkedIn links. A data layer for that would be indirection, not structure. |
-| Templates | Astro components, static output   | Zero runtime JavaScript by default. See [ADR-0001](./decisions/0001-astro-static-first.md).                                 |
-| Styles    | Plain CSS, custom-property tokens | A one-page site does not amortize a framework's bytes or its learning cost.                                                 |
-| Build     | `astro build` → `dist/`           | Fully static. No SSR adapter.                                                                                               |
-| Hosting   | Vercel, Git integration           | See [ADR-0002](./decisions/0002-vercel-static-hosting.md).                                                                  |
-| Contact   | LinkedIn                          | See [ADR-0003](./decisions/0003-defer-contact-form.md).                                                                     |
+| Layer     | Choice                                 | Rationale                                                                                    |
+| --------- | -------------------------------------- | -------------------------------------------------------------------------------------------- |
+| Content   | Inline in each page under `src/pages/` | Two pages. A data layer between an author and two files would be indirection, not structure. |
+| Templates | Astro components, static output        | Zero runtime JavaScript by default. See [ADR-0001](./decisions/0001-astro-static-first.md).  |
+| Styles    | Plain CSS, custom-property tokens      | A one-page site does not amortize a framework's bytes or its learning cost.                  |
+| Build     | `astro build` → `dist/`                | Fully static. No SSR adapter.                                                                |
+| Hosting   | Vercel, Git integration                | See [ADR-0002](./decisions/0002-vercel-static-hosting.md).                                   |
+| Contact   | LinkedIn                               | See [ADR-0003](./decisions/0003-defer-contact-form.md).                                      |
 
 ## Performance budget
 
@@ -51,16 +51,27 @@ that the page is under 60 KB catches the regressions this site can actually suff
 field Core Web Vitals data, and there will not be, because third-party analytics is a non-goal —
 that trade-off is accepted, not overlooked.
 
-## Why the page has no sections
+## Why the homepage has no sections
 
-The homepage shows a name and two links. No tagline, bio, project cards, experience list, nav bar or
-footer. That is a product decision, not an unfinished state: the site's job is to identify its owner
-and point at his profiles, and anything added to make it look more substantial would be working
-against that.
+The homepage shows a name and three links. No tagline, bio, project cards, experience list, nav bar
+or footer. That is a product decision, not an unfinished state: its job is to identify its owner and
+point at where to go next, and anything added to make it look more substantial would work against
+that. The biography lives at `/about`, where someone who wants it has asked for it.
 
-It follows that several things a portfolio usually needs are absent on purpose. There is no
-`src/data/`, no component directory, no layout component, and no routing beyond the single page. A
-`BaseLayout.astro` wrapping one page is a layer with nothing to share.
+Several things a portfolio usually needs are still absent on purpose: no `src/data/`, no component
+directory, no routing library, and no page that exists to pad the site out.
+
+### When the layout arrived
+
+`src/layouts/BaseLayout.astro` holds the document head, the palette, the type scale and the content
+column. This document previously argued **against** a layout, on the grounds that a wrapper around a
+single page is a layer with nothing to share. That was right while there was one page, and it
+stopped being right when `/about` arrived: the alternative is now two copies of the palette and the
+base type, and two copies of a thing drift.
+
+The reasoning is recorded rather than quietly reversed, because the rule it illustrates outlives the
+decision: **an abstraction is introduced when a second caller makes it cheaper than the duplication,
+not when it is first imagined.**
 
 A **Contact** link is planned, and will sit after LinkedIn pointing at a `/contact` page. Nothing is
 reserved for it in advance: no placeholder markup, no route, no styling hook. See

@@ -121,21 +121,39 @@ for (const file of files.filter((f) =>
 const maps = files.filter((f) => f.endsWith('.map'));
 if (maps.length > 0) fail(`dist/ ships ${maps.length} source map(s)`);
 
-// 8. Required metadata is present and canonical points at the canonical host.
+// 8. Required metadata on EVERY page, not just the index, and each canonical on the canonical
+//    host and distinct. A second page that silently inherits the first page's canonical tells
+//    search engines the two are the same document.
 const site = 'https://www.raymondkbakerjr.com';
-for (const [label, re] of [
-  ['<title>', /<title>[^<]{3,}<\/title>/i],
-  ['meta description', /<meta[^>]+name=["']description["'][^>]+content=["'][^"']{10,}/i],
-  ['viewport', /<meta[^>]+name=["']viewport["']/i],
-  ['lang attribute', /<html[^>]+lang=["'][a-z]{2}/i],
-  ['favicon', /<link[^>]+rel=["']icon["']/i],
-]) {
-  if (!re.test(index)) fail(`index.html is missing ${label}`);
-}
-const canonical = index.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i);
-if (!canonical) fail('index.html is missing a canonical link');
-else if (!canonical[1].startsWith(site)) {
-  fail(`canonical is ${canonical[1]}, which is not on ${site}`);
+const canonicals = new Map();
+for (const file of html) {
+  const doc = await readFile(file, 'utf8');
+  const name = relative(DIST, file);
+  for (const [label, re] of [
+    ['<title>', /<title>[^<]{3,}<\/title>/i],
+    ['meta description', /<meta[^>]+name=["']description["'][^>]+content=["'][^"']{10,}/i],
+    ['viewport', /<meta[^>]+name=["']viewport["']/i],
+    ['lang attribute', /<html[^>]+lang=["'][a-z]{2}/i],
+    ['favicon', /<link[^>]+rel=["']icon["']/i],
+  ]) {
+    if (!re.test(doc)) fail(`${name} is missing ${label}`);
+  }
+
+  const canonical = doc.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']+)["']/i);
+  if (!canonical) {
+    fail(`${name} is missing a canonical link`);
+  } else if (!canonical[1].startsWith(site)) {
+    fail(`${name} canonical is ${canonical[1]}, which is not on ${site}`);
+  } else if (canonicals.has(canonical[1])) {
+    fail(`${name} and ${canonicals.get(canonical[1])} share the canonical ${canonical[1]}`);
+  } else {
+    canonicals.set(canonical[1], name);
+  }
+
+  // One h1 per document, which is both an accessibility expectation and a signal search engines
+  // read. Cheap to assert here on every page rather than only where a browser test exists.
+  const h1s = (doc.match(/<h1\b/gi) ?? []).length;
+  if (h1s !== 1) fail(`${name} has ${h1s} <h1> element(s); expected exactly 1`);
 }
 
 // 9. Every internal link resolves to something that exists.

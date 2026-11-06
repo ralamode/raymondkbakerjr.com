@@ -1,0 +1,136 @@
+---
+/**
+ * About.
+ *
+ * Every claim here traces to the canonical resume at
+ * ~/workspace/job-search-context/resumes/default/resume.md, which is already circulated publicly.
+ * Nothing is derived, rounded or re-estimated, per docs/content-policy.md. No phone number, no
+ * email address, and location at region granularity only.
+ *
+ * Written to the resume's own style rules: one outcome and one number per line, plain wording,
+ * evidence over granular detail.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const work = [
+  'Tech-led my org’s migration to LinkedIn’s design system: 300+ components across 8 teams, ahead of plan, zero regressions.',
+  'Brought Marketing Overview’s Core Web Vitals from red back to green and cut p90 page load by more than 1.5 seconds.',
+  'Built an opt-in CI cache on GitHub Actions that 6 monorepos adopted, saving around 26,000 compute-hours a month.',
+  'Traced flaky tests to a framework bug that dropped async promises; the cleanup lifted CI stability from 65% to over 80%.',
+  'Shipped a Playwright test runner as a shared package, cutting feedback to 1–10 seconds.',
+  'Built an AI agent that diagnosed flaky tests and opened its own fixes: 50+ pull requests, over 80% merged after human review.',
+  'Replaced raw HTML controls and bespoke CSS with accessible components, turning WCAG checks into automated tests.',
+];
+---
+
+<BaseLayout
+  title="About | Ray Baker"
+  description="Ray Baker is a software engineer with 18 years building web products and infrastructure, 13 of them at LinkedIn."
+  path="/about"
+>
+  <h1>About</h1>
+
+  <p class="lede">
+    I’m a software engineer in Northeastern Pennsylvania. Eighteen years building web products and
+    infrastructure, thirteen of them at LinkedIn, mostly on things used by hundreds of millions of
+    people.
+  </p>
+
+  <p>
+    The work I’m best at sits between product and platform: design systems, web performance,
+    accessibility, and the testing and CI that let a large team move quickly without breaking
+    things.
+  </p>
+
+  <h2>LinkedIn, 2013 to 2026</h2>
+  <p class="role">Senior Software Engineer</p>
+  <ul class="work">
+    {work.map((item) => (
+      <li>{item}</li>
+    ))}
+  </ul>
+  <p>
+    I’m passionate about accessibility. I became an Accessibility Champion in 2019, driving
+    accessible-by-default standards.
+  </p>
+
+  <h2>mat-plan</h2>
+  <p>
+    A workout planner I built for youth wrestlers and other youth athletes. Still in progress, and
+    public: full-stack TypeScript on Next.js and Postgres, with axe-core accessibility checks in CI
+    so regressions fail the build. 250+ merged pull requests and 7 architecture decision records so
+    far. The code is <a href="https://github.com/ralamode/mat-plan">on GitHub</a>.
+  </p>
+
+  <h2>Before that</h2>
+  <p>
+    UI Engineering roles at Upkey Interactive, Eventful, Digitaria/J. Walter Thompson on NBC.com,
+    and a la mode. Computer science coursework at Victor Valley College.
+  </p>
+
+  <nav aria-label="Primary">
+    <ul>
+      <li>
+        <a href="/">Home</a>
+      </li>
+      <li>
+        <a href="https://github.com/ralamode">GitHub</a>
+      </li>
+      <li>
+        <a href="https://www.linkedin.com/in/raymondbaker">LinkedIn</a>
+      </li>
+    </ul>
+  </nav>
+</BaseLayout>
+
+<style>
+  p {
+    margin: 1.25rem 0 0;
+    font-size: 1rem;
+    line-height: 1.65;
+  }
+
+  .lede {
+    margin-top: 1.5rem;
+  }
+
+  h2 {
+    margin: 2.5rem 0 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+  }
+
+  /* The role sits tight under its heading, as a caption rather than a paragraph. */
+  .role {
+    margin-top: 0.25rem;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+
+  /*
+   * Hanging bullets: the marker sits in the gutter so the text column stays flush with the
+   * paragraphs above it. `list-style-position: outside` with a negative indent does this without
+   * a decorative glyph of our own.
+   */
+  .work {
+    margin: 1rem 0 0;
+    padding-left: 1.1rem;
+    list-style: disc;
+  }
+
+  .work li {
+    margin-top: 0.6rem;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .work li::marker {
+    color: var(--muted);
+  }
+
+  nav {
+    margin-top: calc(2.5rem - var(--link-pad-block));
+  }
+</style>

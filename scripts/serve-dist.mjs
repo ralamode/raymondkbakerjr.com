@@ -14,7 +14,7 @@
 
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { extname, normalize, resolve } from 'node:path';
+import { extname, join, normalize, resolve } from 'node:path';
 
 export const DIST_DIR = 'dist';
 export const DEFAULT_PORT = 4329;
@@ -43,8 +43,7 @@ export async function serveDist(port = DEFAULT_PORT) {
   const server = createServer(async (req, res) => {
     try {
       const url = new URL(req.url ?? '/', `http://localhost:${port}`);
-      let pathname = decodeURIComponent(url.pathname);
-      if (pathname.endsWith('/')) pathname += 'index.html';
+      const pathname = decodeURIComponent(url.pathname);
 
       // Confine every request to dist/. `normalize` collapses `..` before the prefix check, so a
       // traversal attempt resolves outside `root` and is refused rather than served.
@@ -54,9 +53,18 @@ export async function serveDist(port = DEFAULT_PORT) {
         return;
       }
 
-      const body = await readFile(filePath);
+      // Directory index resolution, for `/about` as well as `/about/`. Astro emits
+      // `dist/about/index.html` and a real host serves it at both paths; without this the suite
+      // 404s on every page but the root and would be testing something the site is not.
+      let body;
+      try {
+        body = await readFile(filePath);
+      } catch (err) {
+        if (err.code !== 'EISDIR' && err.code !== 'ENOENT') throw err;
+        body = await readFile(join(filePath, 'index.html'));
+      }
       res.writeHead(200, {
-        'content-type': MIME[extname(filePath)] ?? 'application/octet-stream',
+        'content-type': MIME[extname(filePath) || '.html'] ?? 'application/octet-stream',
         'cache-control': 'no-store',
       });
       res.end(body);
