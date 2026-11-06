@@ -33,18 +33,18 @@ history.
 footers, so they never get renumbered. The table below is in execution order; read the id column as
 a name.
 
-| id    | Item                                                                                      | Status |
-| ----- | ----------------------------------------------------------------------------------------- | ------ |
-| M1-1  | Scaffold Astro + TypeScript strict; add lint, typecheck, build and dependency-audit gates | Done   |
-| M1-5a | PR screenshot capture and publishing (Playwright)                                         | Open   |
-| M1-6a | Vercel project connected to the repo, Astro preset, previews building                     | Open   |
-| M1-2  | Semantic responsive layout: header, hero, work, experience, contact, footer               | Open   |
-| M1-5b | `scripts/audit-dist.mjs` and the Playwright a11y / keyboard / 320px suite                 | Open   |
-| M1-3  | Typed content in `src/data/`; anchor navigation                                           | Open   |
-| M1-4  | Contact section and footer: LinkedIn call to action                                       | Open   |
-| M1-7  | Metadata: canonical URL, Open Graph image, `robots.txt`, `sitemap.xml`                    | Open   |
-| M1-6b | Custom domain, TLS, apex/`www` canonicalization, preview `noindex`                        | Open   |
-| M1-8  | Verify on a real phone and with keyboard-only navigation                                  | Open   |
+| id    | Item                                                                                                    | Status  |
+| ----- | ------------------------------------------------------------------------------------------------------- | ------- |
+| M1-1  | Scaffold Astro + TypeScript strict; add lint, typecheck, build and dependency-audit gates               | Done    |
+| M1-5a | PR screenshot capture and publishing (Playwright)                                                       | Open    |
+| M1-6a | Vercel project connected to the repo, Astro preset, previews building                                   | Open    |
+| M1-2  | Homepage: name, GitHub, LinkedIn. No sections, no content layer                                         | Done    |
+| M1-5b | `scripts/audit-dist.mjs` and the Playwright a11y / keyboard / 320px suite                               | Open    |
+| M1-3  | ~~Typed content in `src/data/`~~ dropped: three elements need no content layer                          | Dropped |
+| M1-4  | ~~Contact section + LinkedIn CTA~~ folded into M1-2; the Contact link ships with M2                     | Dropped |
+| M1-7  | Metadata: title, description and canonical done in M1-2. Open Graph, `robots.txt`, `sitemap.xml` remain | Open    |
+| M1-6b | Custom domain, TLS, apex/`www` canonicalization, preview `noindex`                                      | Open    |
+| M1-8  | Verify on a real phone and with keyboard-only navigation                                                | Open    |
 
 Two orderings here are deliberate, and both were wrong in the first draft of this plan:
 
@@ -66,10 +66,15 @@ Two orderings here are deliberate, and both were wrong in the first draft of thi
 **Exit:** a recruiter reaches GitHub or LinkedIn in ≤2 clicks with JavaScript disabled; every gate
 in [AGENTS.md](../AGENTS.md#quality-gates) passes; no private contact detail is disclosed anywhere.
 
-## M2 — Contact form (conditional)
+## M2. Contact form (planned)
 
-**Entry condition, evaluated before any work begins:** has LinkedIn proven insufficient in practice?
-The default answer is no, and M2 stays closed. Record the evaluation either way.
+**Planned, not conditional** _(owner, 2026-11-06)_. This started life as "open M2 only if LinkedIn
+proves insufficient"; the owner has since decided a contact form is wanted. The deferral itself is
+unchanged: it is not built yet, and nothing is reserved for it in the page, the routes or the
+config. See the amendment on [ADR-0003](./decisions/0003-defer-contact-form.md).
+
+When it ships, the homepage navigation becomes **GitHub · LinkedIn · Contact**, with Contact
+pointing at a `/contact` page. The form should work without client-side JavaScript.
 
 If it opens, the decision order is load-bearing: choose the email provider and the rate-limiting
 mechanism, verify the sender domain, and prove SPF/DKIM/DMARC with a real test send — **all before

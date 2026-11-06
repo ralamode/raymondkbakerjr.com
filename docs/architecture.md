@@ -7,7 +7,7 @@ in [decisions/](./decisions/README.md).
 
 ```mermaid
 flowchart LR
-  author["Content edit<br/>src/data/*.ts"] --> pr["Pull request"]
+  author["Content edit<br/>src/pages/index.astro"] --> pr["Pull request"]
   pr --> ci["GitHub Actions<br/>format · links · gitleaks<br/>build · audit · a11y"]
   pr --> preview["Vercel preview<br/>noindex"]
   ci -->|green| merge["Squash to main"]
@@ -24,14 +24,14 @@ other than the visitor's.
 
 ## Layers
 
-| Layer     | Choice                                  | Rationale                                                                                                                |
-| --------- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| Content   | Typed TypeScript modules in `src/data/` | The edit surface for every content change. Typed so a malformed project card fails the build instead of rendering wrong. |
-| Templates | Astro components, static output         | Zero runtime JavaScript by default. See [ADR-0001](./decisions/0001-astro-static-first.md).                              |
-| Styles    | Plain CSS, custom-property tokens       | A one-page site does not amortize a framework's bytes or its learning cost.                                              |
-| Build     | `astro build` → `dist/`                 | Fully static. No SSR adapter.                                                                                            |
-| Hosting   | Vercel, Git integration                 | See [ADR-0002](./decisions/0002-vercel-static-hosting.md).                                                               |
-| Contact   | LinkedIn                                | See [ADR-0003](./decisions/0003-defer-contact-form.md).                                                                  |
+| Layer     | Choice                            | Rationale                                                                                                                   |
+| --------- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Content   | Inline in `src/pages/index.astro` | Three visible elements: the name, and GitHub and LinkedIn links. A data layer for that would be indirection, not structure. |
+| Templates | Astro components, static output   | Zero runtime JavaScript by default. See [ADR-0001](./decisions/0001-astro-static-first.md).                                 |
+| Styles    | Plain CSS, custom-property tokens | A one-page site does not amortize a framework's bytes or its learning cost.                                                 |
+| Build     | `astro build` → `dist/`           | Fully static. No SSR adapter.                                                                                               |
+| Hosting   | Vercel, Git integration           | See [ADR-0002](./decisions/0002-vercel-static-hosting.md).                                                                  |
+| Contact   | LinkedIn                          | See [ADR-0003](./decisions/0003-defer-contact-form.md).                                                                     |
 
 ## Performance budget
 
@@ -50,6 +50,21 @@ page reports the CI runner's mood, not the site's quality; asserting that no Jav
 that the page is under 60 KB catches the regressions this site can actually suffer. There is no
 field Core Web Vitals data, and there will not be, because third-party analytics is a non-goal —
 that trade-off is accepted, not overlooked.
+
+## Why the page has no sections
+
+The homepage shows a name and two links. No tagline, bio, project cards, experience list, nav bar or
+footer. That is a product decision, not an unfinished state: the site's job is to identify its owner
+and point at his profiles, and anything added to make it look more substantial would be working
+against that.
+
+It follows that several things a portfolio usually needs are absent on purpose. There is no
+`src/data/`, no component directory, no layout component, and no routing beyond the single page. A
+`BaseLayout.astro` wrapping one page is a layer with nothing to share.
+
+A **Contact** link is planned, and will sit after LinkedIn pointing at a `/contact` page. Nothing is
+reserved for it in advance: no placeholder markup, no route, no styling hook. See
+[ADR-0003](./decisions/0003-defer-contact-form.md) and M2 in [plan.md](./plan.md).
 
 ## Why a React island is not here yet
 

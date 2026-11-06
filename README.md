@@ -60,9 +60,9 @@ Astro reports anonymous build telemetry by default. CI disables it with
 
 ### Editing content
 
-Content lives in typed modules under `src/data/`. It is typed so that a malformed project card fails
-the build instead of rendering wrong — content edits are the change this repo sees most often, so
-that is where the safety belongs.
+The homepage is a single file, `src/pages/index.astro`, holding its own markup and styles. There is
+no content layer and no component library, because three elements do not need one: a typed data
+module and a `ProjectCard` component would be abstraction over a name and two links.
 
 Before editing copy, the resume, or anything under `public/`, read
 [docs/content-policy.md](./docs/content-policy.md). This repository's history is permanent, so that

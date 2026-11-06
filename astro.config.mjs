@@ -7,7 +7,9 @@ export default defineConfig({
   output: 'static',
 
   // Required for canonical URLs, the sitemap and absolute Open Graph paths (M1-7).
-  site: 'https://raymondkbakerjr.com',
+  // `www` is canonical. The apex must redirect to it, which is M1-6b and is NOT yet done:
+  // both hostnames currently answer independently (and today both still point at Squarespace).
+  site: 'https://www.raymondkbakerjr.com',
 
   // The index page must ship zero client-side JavaScript (docs/architecture.md -> Performance
   // budget). Inlining a small stylesheet avoids a second request rather than adding one.

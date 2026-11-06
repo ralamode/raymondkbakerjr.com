@@ -1,7 +1,20 @@
 # ADR-0003 — No contact form at launch; LinkedIn is the contact path
 
-**Status:** Accepted **Date:** 2026-11-05 **Relates:** [ADR-0002](./0002-vercel-static-hosting.md)
-(what is deployed), [content-policy.md](../content-policy.md) (why no address is published instead)
+**Status:** Accepted. **Amended 2026-11-06:** still not built, but no longer conditional **Date:**
+2026-11-05 **Relates:** [ADR-0002](./0002-vercel-static-hosting.md) (what is deployed),
+[content-policy.md](../content-policy.md) (why no address is published instead)
+
+> **Amendment, 2026-11-06.** The decision below stands unchanged: there is no contact endpoint, no
+> email provider, no CAPTCHA and no secret, and nothing is reserved for one. What changed is the
+> expectation. This ADR framed M2 as conditional, opening only if LinkedIn proved insufficient; the
+> owner has since decided a contact form is wanted, with the homepage navigation becoming **GitHub ·
+> LinkedIn · Contact** and Contact pointing at a `/contact` page. The entry condition in
+> [plan.md](../plan.md) M2 is updated to match.
+>
+> Recorded as an amendment rather than a superseding ADR because the decision is the same one: do
+> not build it now. Only the reason for waiting changed, from "probably unnecessary" to "not yet".
+> If the _implementation_ approach is ever settled, that is a new ADR, and the alternatives weighed
+> below are the starting point for it.
 
 ## Context
 
