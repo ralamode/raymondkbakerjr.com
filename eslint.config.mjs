@@ -1,4 +1,5 @@
 import js from '@eslint/js';
+import globals from 'globals';
 
 /**
  * Lints the repository's own JavaScript: the audit and link-check scripts in `scripts/`, and this
@@ -19,7 +20,10 @@ export default [
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
-      globals: { console: 'readonly', process: 'readonly' },
+      // `globals` rather than a hand-written list. The hand-written one was missing `URL` and
+      // `fetch` within an hour of the first script that used them, and an incomplete list fails
+      // as `no-undef` on correct code, which teaches people to disable the rule.
+      globals: globals.nodeBuiltin,
     },
     rules: {
       eqeqeq: ['error', 'always'],

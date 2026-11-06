@@ -21,8 +21,13 @@
 
 ## Screenshots
 
-<!-- REQUIRED for any visual change: mobile (~390px) and desktop (~1280px). Before/after where a
-     comparison helps. Delete the section for a non-visual change. -->
+<!-- REQUIRED for any visual change. Do not paste images here by hand:
+
+       pnpm build && pnpm screenshots
+       pnpm screenshots:publish --pr <n> --comment
+
+     That posts 320/390/1280px in light and dark as a comment. Note here what a reviewer should
+     look at, and link the Vercel preview. Delete the section for a non-visual change. -->
 
 ## New dependencies
 
