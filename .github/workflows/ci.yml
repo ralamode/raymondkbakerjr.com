@@ -58,11 +58,25 @@ jobs:
       - name: Build-output assertions
         run: pnpm audit:dist
 
+      # Measured, not assumed: this step took 16s on one run and 597s on the next, for a suite
+      # that runs in 4s. Almost all of that was `--with-deps`, which shells out to apt-get, so it
+      # is gone: ubuntu-latest already ships Chromium's system libraries. If a future runner image
+      # stops doing so the next step fails immediately and loudly, which is a better trade than
+      # paying an apt round trip on every run forever.
+      - name: Cache Chromium
+        id: chromium-cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          # Keyed on the lockfile rather than the Playwright version alone. Coarser than it needs
+          # to be, so an unrelated dependency bump also re-downloads, but it cannot go stale
+          # against a Playwright upgrade, and a wrong browser build is a far worse failure than a
+          # redundant download.
+          key: chromium-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Install Chromium
-        # Only Chromium, and only the browser this suite drives. `--with-deps` pulls the system
-        # libraries the runner image does not ship. Not cached: the download is tens of seconds
-        # against a cache that would need invalidating on every Playwright bump.
-        run: pnpm exec playwright install --with-deps chromium
+        if: steps.chromium-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install chromium
 
       - name: Accessibility, keyboard and layout
         run: pnpm e2e
