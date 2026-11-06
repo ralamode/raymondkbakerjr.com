@@ -1,15 +1,19 @@
 ---
 /**
- * Scaffold placeholder. M1-2 replaces this with the real layout (header, hero, work, experience,
- * contact, footer) built from `BaseLayout.astro` and the typed content modules in `src/data/`.
+ * The homepage, and the whole site.
  *
- * It is deliberately a dignified holding page rather than filler: M1-6a connects the Vercel
- * project next, so whatever is here is what a preview (and briefly, production) serves. Every
- * claim on it is traceable to already-public source material, per docs/content-policy.md.
+ * Three visible elements by product decision: the name, and links to GitHub and LinkedIn. No
+ * tagline, bio, nav bar or footer. "Software Engineer" lives in the document title and meta
+ * description rather than on the page, so the page stays an identity card while search results
+ * and link previews still say what he does.
+ *
+ * A Contact link is planned and will sit after LinkedIn, pointing at a /contact page. It is
+ * deliberately not stubbed here: see docs/decisions/0003-defer-contact-form.md and M2 in
+ * docs/plan.md. No markup, route or styling is reserved for it in advance.
  */
-const title = 'Ray Baker, Engineer';
+const title = 'Ray Baker | Software Engineer';
 const description =
-  'Engineer in Northeastern Pennsylvania. Frontend, design systems, performance and accessibility.';
+  'Personal website of Ray Baker, software engineer. Find me on GitHub and LinkedIn.';
 ---
 
 <!doctype html>
@@ -20,107 +24,142 @@ const description =
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={new URL('/', Astro.site).href} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   </head>
   <body>
     <main>
       <h1>Ray Baker</h1>
-      <p class="role">Engineer</p>
-      <p class="site-status">
-        This site is being rebuilt in the open. The source, including the decisions behind it, is on
-        GitHub.
-      </p>
-      <ul class="links">
-        <li>
-          <a href="https://github.com/ralamode">GitHub</a>
-        </li>
-        <li>
-          <a href="https://www.linkedin.com/in/raymondbaker">LinkedIn</a>
-        </li>
-      </ul>
+      <nav aria-label="Profiles">
+        <ul>
+          <li>
+            <a href="https://github.com/ralamode">GitHub</a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/raymondbaker">LinkedIn</a>
+          </li>
+        </ul>
+      </nav>
     </main>
   </body>
 </html>
 
 <style>
   /*
-   * Minimal and intentionally un-designed. The token system, type scale and palette are M0-9 and
-   * M1-2; adding them here would mean writing them twice. System font stack only: no webfont is
-   * the standing rule (docs/architecture.md -> Performance budget).
+   * Dark is the default and light is the opt-in, which is the inverse of the usual arrangement
+   * and is deliberate: it matches the palette this page was designed against. `color-scheme` is
+   * declared in both so form controls, scrollbars and the canvas follow suit.
+   *
+   * Every pair below was measured rather than eyeballed. Against their backgrounds:
+   * foreground 16.77:1 dark / 16.71:1 light, accent 8.84:1 dark / 5.76:1 light. WCAG AA for
+   * normal text needs 4.5:1, and a focus indicator needs 3:1, so the accent carries both.
    */
   :root {
-    --ink: #16191d;
-    --paper: #ffffff;
-    --muted: #4a5159;
+    color-scheme: dark;
+
+    --background: #111315;
+    --foreground: #f2f3f5;
+    --accent: #89b4fa;
+
+    /* The vertical padding that turns each link into a 44px touch target. Named because the gap
+       below the heading has to subtract it back out. Paired with an explicit line-height on the
+       anchor: left to the font's default line box this produced a 40px target, measured, not the
+       44px it was meant to be. 0.9375rem x 1.4 + 12px x 2 = 45px. */
+    --link-pad-block: 12px;
   }
 
-  @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: light) {
     :root {
-      --ink: #e8eaed;
-      --paper: #121417;
-      --muted: #a2abb5;
-    }
-  }
+      color-scheme: light;
 
-  html {
-    color-scheme: light dark;
+      --background: #fafafa;
+      --foreground: #181a1d;
+      --accent: #245fc2;
+    }
   }
 
   body {
     margin: 0;
-    background: var(--paper);
-    color: var(--ink);
-    font-family:
-      system-ui,
-      -apple-system,
-      'Segoe UI',
-      Roboto,
-      sans-serif;
-    line-height: 1.6;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
+  /*
+   * One fluid column, no breakpoints. `min(100% - 48px, 480px)` gives a 24px gutter until the
+   * column reaches its 480px cap, after which it simply centres, so 768px, 1024px and 1440px all
+   * render identically by construction rather than by three sets of rules.
+   *
+   * Padded from the top rather than vertically centred: the content should sit in the upper part
+   * of the viewport and stay put as the window grows.
+   */
   main {
-    /* 16px gutter so the page holds at 320px without horizontal overflow. */
-    max-width: 38rem;
+    width: min(100% - 48px, 480px);
     margin-inline: auto;
-    padding: 4rem 1rem;
+    padding-block: clamp(48px, 12vh, 120px);
   }
 
+  /*
+   * Sizes are the ones specified, expressed in rem rather than px. At the default 16px root this
+   * renders identically (2.125rem is 34px, 2.75rem is 44px), but a reader who has raised their
+   * browser's default font size gets scaled text instead of being ignored. Page zoom works either
+   * way; this is the other control, the one px silently opts out of. Spacing below stays in px
+   * because a touch target and a gutter are physical minimums, not text.
+   */
   h1 {
     margin: 0;
-    font-size: clamp(2rem, 7vw, 2.75rem);
+    font-size: clamp(2.125rem, 5vw, 2.75rem);
+    font-weight: 700;
     line-height: 1.15;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.035em;
   }
 
-  .role {
-    margin: 0.25rem 0 2rem;
-    color: var(--muted);
+  /*
+   * 28px of optical space between the name and the links. The anchors carry visually empty
+   * padding to reach a 44px touch target, so it is subtracted here instead of stacking on top:
+   * otherwise the measured gap and the perceived gap disagree by 11px.
+   */
+  nav {
+    margin-top: calc(28px - var(--link-pad-block));
   }
 
-  .site-status {
-    margin: 0 0 2rem;
-  }
-
-  .links {
+  ul {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.5rem;
+    gap: 0 24px;
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .links a {
+  a {
     display: inline-block;
-    /* >=44px tap target without a fixed width that would break at 320px. */
-    padding: 0.6rem 0;
+    padding-block: var(--link-pad-block);
     color: inherit;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 0.25em;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
   }
 
-  .links a:focus-visible {
-    outline: 2px solid currentColor;
-    outline-offset: 4px;
+  /* 15px once there is room for it. An inverse size relationship cannot be expressed cleanly in
+     clamp(), and one media query is more legible than a negative coefficient. */
+  @media (min-width: 480px) {
+    a {
+      font-size: 0.9375rem;
+    }
+  }
+
+  a:hover {
+    color: var(--accent);
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 5px;
+    border-radius: 2px;
   }
 </style>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Ray Baker">
+  <!-- Follows the OS colour scheme, matching the page palette. No background shape: the glyph
+       sits on whatever the browser's tab strip uses, which is what keeps it from looking like a
+       decorative badge. -->
+  <style>
+    text { fill: #f2f3f5 }
+    @media (prefers-color-scheme: light) { text { fill: #181a1d } }
+  </style>
+  <text x="16" y="24" text-anchor="middle"
+        font-family="sans-serif" font-size="24" font-weight="700" letter-spacing="-1">R</text>
+</svg>
